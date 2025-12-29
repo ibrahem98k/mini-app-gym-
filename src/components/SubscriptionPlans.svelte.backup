@@ -1,0 +1,130 @@
+<script>
+  import { onMount } from 'svelte';
+  
+  export let activePlan = null;
+  export let onSubscribe = (plan) => {};
+  
+  const plans = [
+    {
+      id: 'monthly',
+      name: 'Monthly',
+      price: 29.99,
+      duration: 'month',
+      features: [
+        'Access to all gym facilities',
+        'Group fitness classes',
+        'Locker room access',
+        'Free Wi-Fi',
+        '1 Personal training session'
+      ],
+      popular: false
+    },
+    {
+      id: 'quarterly',
+      name: 'Quarterly',
+      price: 74.99,
+      duration: '3 months',
+      features: [
+        'Everything in Monthly',
+        '10% off personal training',
+        '2 Guest passes',
+        'Nutrition consultation',
+        'Priority class booking'
+      ],
+      popular: true
+    },
+    {
+      id: 'yearly',
+      name: 'Yearly',
+      price: 249.99,
+      duration: 'year',
+      features: [
+        'Everything in Quarterly',
+        '20% off personal training',
+        '6 Guest passes',
+        'Free fitness assessment',
+        'Exclusive member events',
+        'Towel service'
+      ],
+      popular: false
+    }
+  ];
+  
+  function formatPrice(price) {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(price);
+  }
+  
+  function getPricePerMonth(plan) {
+    if (plan.id === 'monthly') return formatPrice(plan.price);
+    if (plan.id === 'quarterly') return formatPrice(plan.price / 3);
+    if (plan.id === 'yearly') return formatPrice(plan.price / 12);
+    return '';
+  }
+</script>
+
+<div class="space-y-6">
+  <h2 class="text-3xl font-bold text-white mb-8 text-gradient">Choose Your Plan</h2>
+  
+  <div class="space-y-6">
+    {#each plans as plan (plan.id)}
+      <div class={`relative ${plan.popular ? 'border-2 border-red-600 shadow-glow' : 'border border-gray-700'} rounded-3xl overflow-hidden bg-gradient-to-br from-gray-900 to-gray-800 shadow-2xl hover:shadow-3xl transition-all duration-300 animate-fade-in-up`}>
+        {#if plan.popular}
+          <div class="bg-gradient-to-r from-red-600 to-red-700 text-white text-sm font-bold text-center py-2 px-4 absolute right-6 top-6 rounded-full shadow-glow animate-pulse-slow">
+            POPULAR
+          </div>
+        {/if}
+        
+        <div class="p-8">
+          <div class="flex justify-between items-start mb-6">
+            <div>
+              <h3 class="text-2xl font-bold text-white">{plan.name}</h3>
+              <p class="text-gray-400 text-lg">Billed per {plan.duration}</p>
+            </div>
+            <div class="text-right">
+              <p class="text-4xl font-bold text-gradient">{formatPrice(plan.price)}</p>
+              <p class="text-sm text-gray-400">{getPricePerMonth(plan)}/month</p>
+            </div>
+          </div>
+          
+          <ul class="space-y-4 my-8">
+            {#each plan.features as feature}
+              <li class="flex items-start">
+                <svg class="h-6 w-6 text-red-500 mr-3 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span class="text-gray-300 text-lg">{feature}</span>
+              </li>
+            {/each}
+          </ul>
+          
+          <button 
+            on:click={() => onSubscribe(plan)}
+            class={`w-full py-4 px-6 rounded-3xl font-bold transition-all duration-300 text-lg ${
+              activePlan === plan.id 
+                ? 'bg-gray-800 text-green-400 hover:bg-gray-700 border border-green-400' 
+                : 'btn-primary shadow-glow hover:shadow-glow-lg'
+ im'
+           ’S
+            }`}
+nockout
+           Typed
+            }`}
+ily
+           储备
+            ftp
+            }`}
+          >
+            {activePlan === plan.id ? 'Current Plan' : 'Get Started'}
+          </button>
+        </div>
+      </div>
+    {/each}
+  </div>
+  
+  <div class="mt-8 text-center text-gray-400 text-lg">
+    <p>Need help choosing? <a href="#contact" class="text-gradient hover:underline">Contact us</a></p>
+  </div>
+</div>

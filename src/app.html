@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<script src="https://cdn.marmot-cloud.com/npm/hylid-bridge/2.10.0/index.js"></script>
+		%sveltekit.head%
+		<style>
+			html, body {
+				height: 100%;
+				margin: 0;
+				overflow-x: hidden;
+			}
+			
+			@keyframes gradientBG {
+				0% { background-position: 0% 50%; }
+				50% { background-position: 100% 50%; }
+				100% { background-position: 0% 50%; }
+			}
+			
+			.animate-gradient {
+				background: linear-gradient(-45deg, #1a1a1a, #2d1e2f, #1e2f2f, #2f1e1e);
+				background-size: 400% 400%;
+				animation: gradientBG 15s ease infinite;
+				height: 100%;
+				min-height: 100vh;
+			}
+		</style>
+	</head>
+	<body data-sveltekit-preload-data="hover" class="min-h-full">
+		<div class="animate-gradient">
+			<div style="display: contents">%sveltekit.body%</div>
+		</div>
+	</body>
+</html>
