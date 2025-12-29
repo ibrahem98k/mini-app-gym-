@@ -4,6 +4,7 @@
 
     let planId = "";
     let selectedPlan = null;
+    let isProcessing = false;
 
     const plans = [
         { id: "monthly", name: "Monthly", price: "49" },
@@ -16,6 +17,53 @@
         planId = $page.url.searchParams.get("plan");
         selectedPlan = plans.find((p) => p.id === planId);
     });
+
+    function pay() {
+        // Get token from localStorage (set during auth)
+        const token = localStorage.getItem("accessToken") || "";
+        isProcessing = true;
+
+        if (typeof my !== "undefined" && my.tradePay) {
+            fetch("https://its.mouamle.space/api/payment", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token,
+                },
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    my.tradePay({
+                        paymentUrl: data.url,
+                        success: (res) => {
+                            isProcessing = false;
+                            my.alert({
+                                content: "Payment successful",
+                            });
+                        },
+                        fail: (err) => {
+                            isProcessing = false;
+                            my.alert({
+                                content: "Payment cancelled",
+                            });
+                        },
+                    });
+                })
+                .catch((err) => {
+                    isProcessing = false;
+                    my.alert({
+                        content: "Payment failed",
+                    });
+                });
+        } else {
+            // Fallback for development
+            console.log("Not in super app - simulating payment");
+            setTimeout(() => {
+                isProcessing = false;
+                alert("Payment simulated (development mode)");
+            }, 1500);
+        }
+    }
 </script>
 
 <div class="min-h-screen bg-gray-900 pt-24 px-4">
@@ -44,9 +92,11 @@
 
             <div class="mt-8">
                 <button
-                    class="w-full bg-gradient-to-r from-red-600 to-red-700 text-white font-bold text-lg py-4 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-200 shadow-lg shadow-red-900/40"
+                    on:click={pay}
+                    disabled={isProcessing}
+                    class="w-full bg-gradient-to-r from-red-600 to-red-700 text-white font-bold text-lg py-4 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-200 shadow-lg shadow-red-900/40 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    Pay ${selectedPlan.price}
+                    {isProcessing ? "Processing..." : "Pay"}
                 </button>
             </div>
         {:else}

@@ -8,12 +8,32 @@
   let isScanning = false;
 
   const handleScanQR = () => {
-    isScanning = true;
-    // Simulate scanning delay
-    setTimeout(() => {
-      isScanning = false;
-      goto("/status");
-    }, 1500);
+    // Use super app's scan API if available
+    if (typeof my !== "undefined" && my.scan) {
+      isScanning = true;
+
+      my.scan({
+        type: "qr",
+        success: (res) => {
+          console.log("QR Code scanned:", res.code);
+          isScanning = false;
+          // Navigate to subscription status page
+          goto("/status");
+        },
+        fail: (error) => {
+          console.error("Scan failed:", error);
+          isScanning = false;
+        },
+      });
+    } else {
+      // Fallback for development environment (not in super app)
+      console.log("Not in super app environment - simulating scan");
+      isScanning = true;
+      setTimeout(() => {
+        isScanning = false;
+        goto("/status");
+      }, 1500);
+    }
   };
 
   const scrollToSection = (sectionId) => {

@@ -10,6 +10,59 @@
       isVisible = true;
     }, 100);
   });
+
+  function handleContinue() {
+    // Call super app authentication
+    if (typeof my !== "undefined" && my.getAuthCode) {
+      my.getAuthCode({
+        scopes: ["auth_base", "USER_ID"],
+        success: async (res) => {
+          console.log("Auth code received:", res.authCode);
+
+          try {
+            // Send authCode to backend for verification
+            const response = await fetch(
+              "https://its.mouamle.space/api/auth-with-superQi",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  token: res.authCode,
+                }),
+              },
+            );
+
+            if (response.ok) {
+              const data = await response.json();
+              console.log("Authentication successful:", data);
+              // Store any tokens or user data if needed
+              // localStorage.setItem('accessToken', data.accessToken);
+              onContinue();
+            } else {
+              console.error("Authentication failed:", response.status);
+              // Proceed anyway for now
+              onContinue();
+            }
+          } catch (error) {
+            console.error("Error calling auth endpoint:", error);
+            // Proceed anyway for development
+            onContinue();
+          }
+        },
+        fail: (res) => {
+          console.error("Auth failed:", res.authErrorScopes);
+          // Still proceed even if auth fails (for development/testing)
+          onContinue();
+        },
+      });
+    } else {
+      // Not in super app environment, proceed normally
+      console.log("Not in super app environment");
+      onContinue();
+    }
+  }
 </script>
 
 <div
@@ -81,10 +134,10 @@
 
     <!-- Continue Button -->
     <button
-      on:click={onContinue}
+      on:click={handleContinue}
       class="w-full btn-primary shadow-glow hover:shadow-glow-lg text-lg py-4"
     >
-      Enter Dashboard
+      Continue
     </button>
 
     <p class="text-gray-500 text-xs md:text-sm mt-6 md:mt-8 font-light">
