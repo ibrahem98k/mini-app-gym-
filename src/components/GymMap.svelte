@@ -1,14 +1,14 @@
 <script>
-  // Baghdad, Iraq location
+  // Baghdad, Iraq location - Al-Mansour District
   const gymLocation = {
     name: "Infinity Gym Baghdad",
     address: "Al-Mansour District, Baghdad, Iraq",
     phone: "+964 1 234 5678",
     hours: "Mon-Fri: 5:00 AM - 11:00 PM\nSat-Sun: 7:00 AM - 9:00 PM",
     mapUrl:
-      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3324.123456789!2d44.366148!3d33.315168!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzTCsDE4JzU2LjQiTiA0OMKwMjInMTUuNyJX!5e0!3m2!1sen!2siq!4v1620000000000!5m2!1sen!2siq",
+      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13358.476421374975!2d44.34!3d33.3128!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1557810d6b59067b%3A0x4d4c5d8f7d7a5a5a!2sAl-Mansour%2C%20Baghdad%2C%20Iraq!5e0!3m2!1sen!2s!4v1703900000000!5m2!1sen!2s",
     qrCode:
-      "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://maps.app.goo.gl/baghdad-gympro",
+      "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://maps.google.com/?q=33.3128,44.34",
   };
 </script>
 

@@ -41,12 +41,6 @@
                                 content: "Payment successful",
                             });
                         },
-                        fail: (err) => {
-                            isProcessing = false;
-                            my.alert({
-                                content: "Payment cancelled",
-                            });
-                        },
                     });
                 })
                 .catch((err) => {

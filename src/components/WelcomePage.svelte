@@ -37,17 +37,23 @@
             if (response.ok) {
               const data = await response.json();
               console.log("Authentication successful:", data);
-              // Store any tokens or user data if needed
-              // localStorage.setItem('accessToken', data.accessToken);
+              // Store token from response
+              if (data.token) {
+                localStorage.setItem("accessToken", data.token);
+              }
+              // Show success message matching demo
+              if (typeof my !== "undefined" && my.alert) {
+                my.alert({
+                  content: "Login successful",
+                });
+              }
               onContinue();
             } else {
               console.error("Authentication failed:", response.status);
-              // Proceed anyway for now
               onContinue();
             }
           } catch (error) {
             console.error("Error calling auth endpoint:", error);
-            // Proceed anyway for development
             onContinue();
           }
         },
