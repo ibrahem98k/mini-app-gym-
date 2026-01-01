@@ -12,6 +12,9 @@
   const scrollToSection = async (sectionId) => {
     if (isNavigating) return; // Prevent multiple simultaneous navigations
     
+    console.log(`🎯 Navigation requested for: ${sectionId}`);
+    console.log(`📍 Current path: ${window.location.pathname}`);
+    
     isNavigating = true;
     // Close mobile menu first
     menuOpen = false;
@@ -22,28 +25,35 @@
     try {
       // If we're not on the home page, navigate there first
       if (window.location.pathname !== '/') {
+        console.log(`🔄 Navigating to home page first...`);
         await goto('/');
         // Wait a bit for the page to load
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await new Promise(resolve => setTimeout(resolve, 500));
+        console.log(`✅ Home page loaded, current path: ${window.location.pathname}`);
       }
       
       // Now try to find and scroll to the element
+      console.log(`🔍 Looking for element with id: ${sectionId}`);
       let element = document.getElementById(sectionId);
       let attempts = 0;
       const maxAttempts = 10;
       
       // Retry finding the element if it's not immediately available
       while (!element && attempts < maxAttempts) {
+        console.log(`⏳ Attempt ${attempts + 1}/${maxAttempts} - Element not found, waiting...`);
         await new Promise(resolve => setTimeout(resolve, 100));
         element = document.getElementById(sectionId);
         attempts++;
       }
       
       if (element) {
+        console.log(`✅ Found element!`, element);
         // Calculate offset for sticky header
         const headerHeight = 100; // Approximate header height with padding
         const elementPosition = element.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+        
+        console.log(`📏 Scrolling to position: ${offsetPosition}`);
         
         // Smooth scroll to the element
         window.scrollTo({
@@ -59,25 +69,28 @@
         }, 1000);
         
       } else {
-        console.warn(`Element with id "${sectionId}" not found after ${maxAttempts} attempts`);
+        console.warn(`❌ Element with id "${sectionId}" not found after ${maxAttempts} attempts`);
+        console.log(`📋 Available elements with IDs:`, Array.from(document.querySelectorAll('[id]')).map(el => el.id));
         
         // Fallback strategies
         if (sectionId === "home") {
+          console.log(`🏠 Falling back to top of page`);
           window.scrollTo({ top: 0, behavior: "smooth" });
         } else if (sectionId === "plans") {
-          // Try to navigate to plans page
+          console.log(`💰 Falling back to plans page`);
           await goto('/plans');
         } else if (sectionId === "about" || sectionId === "contact") {
-          // Try to scroll to bottom as fallback
+          console.log(`📄 Falling back to bottom of page`);
           window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
         }
       }
     } catch (error) {
-      console.error('Navigation error:', error);
+      console.error('💥 Navigation error:', error);
       // Ultimate fallback - go to home page
       await goto('/');
     } finally {
       isNavigating = false;
+      console.log(`🏁 Navigation completed for: ${sectionId}`);
     }
   };
 </script>
