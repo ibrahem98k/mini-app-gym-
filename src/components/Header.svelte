@@ -1,39 +1,84 @@
 <script>
   import Auth from "./Auth.svelte";
+  import { goto } from "$app/navigation";
 
   let menuOpen = false;
+  let isNavigating = false;
 
   const toggleMenu = () => {
     menuOpen = !menuOpen;
   };
 
-  const scrollToSection = (sectionId) => {
+  const scrollToSection = async (sectionId) => {
+    if (isNavigating) return; // Prevent multiple simultaneous navigations
+    
+    isNavigating = true;
     // Close mobile menu first
     menuOpen = false;
     
     // Add a small delay to ensure menu animation completes
-    setTimeout(() => {
-      const element = document.getElementById(sectionId);
+    await new Promise(resolve => setTimeout(resolve, 150));
+    
+    try {
+      // If we're not on the home page, navigate there first
+      if (window.location.pathname !== '/') {
+        await goto('/');
+        // Wait a bit for the page to load
+        await new Promise(resolve => setTimeout(resolve, 300));
+      }
+      
+      // Now try to find and scroll to the element
+      let element = document.getElementById(sectionId);
+      let attempts = 0;
+      const maxAttempts = 10;
+      
+      // Retry finding the element if it's not immediately available
+      while (!element && attempts < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        element = document.getElementById(sectionId);
+        attempts++;
+      }
+      
       if (element) {
         // Calculate offset for sticky header
-        const headerHeight = 80; // Approximate header height
+        const headerHeight = 100; // Approximate header height with padding
         const elementPosition = element.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
         
+        // Smooth scroll to the element
         window.scrollTo({
           top: offsetPosition,
           behavior: "smooth"
         });
+        
+        // Add a small highlight effect
+        element.style.transition = 'background-color 0.3s ease';
+        element.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+        setTimeout(() => {
+          element.style.backgroundColor = 'transparent';
+        }, 1000);
+        
       } else {
-        // Fallback: try to navigate to the page if element not found
+        console.warn(`Element with id "${sectionId}" not found after ${maxAttempts} attempts`);
+        
+        // Fallback strategies
         if (sectionId === "home") {
           window.scrollTo({ top: 0, behavior: "smooth" });
         } else if (sectionId === "plans") {
-          // Navigate to plans page
-          window.location.href = "/plans";
+          // Try to navigate to plans page
+          await goto('/plans');
+        } else if (sectionId === "about" || sectionId === "contact") {
+          // Try to scroll to bottom as fallback
+          window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
         }
       }
-    }, 100);
+    } catch (error) {
+      console.error('Navigation error:', error);
+      // Ultimate fallback - go to home page
+      await goto('/');
+    } finally {
+      isNavigating = false;
+    }
   };
 </script>
 
@@ -71,22 +116,26 @@
       <nav class="hidden md:flex items-center space-x-8 lg:space-x-12">
         <button
           on:click={() => scrollToSection("home")}
-          class="px-3 py-2 text-red-500 font-bold hover:text-red-400 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 rounded-lg"
+          disabled={isNavigating}
+          class="px-3 py-2 text-red-500 font-bold hover:text-red-400 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >Home</button
         >
         <button
           on:click={() => scrollToSection("plans")}
-          class="px-3 py-2 text-gray-300 hover:text-red-500 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 rounded-lg"
+          disabled={isNavigating}
+          class="px-3 py-2 text-gray-300 hover:text-red-500 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >Plans</button
         >
         <button
           on:click={() => scrollToSection("about")}
-          class="px-3 py-2 text-gray-300 hover:text-red-500 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 rounded-lg"
+          disabled={isNavigating}
+          class="px-3 py-2 text-gray-300 hover:text-red-500 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >About</button
         >
         <button
           on:click={() => scrollToSection("contact")}
-          class="px-3 py-2 text-gray-300 hover:text-red-500 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 rounded-lg"
+          disabled={isNavigating}
+          class="px-3 py-2 text-gray-300 hover:text-red-500 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >Contact</button
         >
         <!-- <Auth /> -->
@@ -139,7 +188,8 @@
       <div class="pt-4 pb-6 border-t border-gray-800 border-opacity-50">
         <button
           on:click={() => scrollToSection("home")}
-          class="block w-full px-4 py-4 text-left text-lg font-medium text-red-500 hover:bg-gray-800 hover:bg-opacity-50 rounded-lg transition-all duration-200 active:scale-[0.98] transform"
+          disabled={isNavigating}
+          class="block w-full px-4 py-4 text-left text-lg font-medium text-red-500 hover:bg-gray-800 hover:bg-opacity-50 rounded-lg transition-all duration-200 active:scale-[0.98] transform disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <div class="flex items-center gap-3">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -150,7 +200,8 @@
         </button>
         <button
           on:click={() => scrollToSection("plans")}
-          class="block w-full px-4 py-4 text-left text-lg font-medium text-gray-300 hover:text-red-500 hover:bg-gray-800 hover:bg-opacity-50 rounded-lg transition-all duration-200 active:scale-[0.98] transform"
+          disabled={isNavigating}
+          class="block w-full px-4 py-4 text-left text-lg font-medium text-gray-300 hover:text-red-500 hover:bg-gray-800 hover:bg-opacity-50 rounded-lg transition-all duration-200 active:scale-[0.98] transform disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <div class="flex items-center gap-3">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -161,7 +212,8 @@
         </button>
         <button
           on:click={() => scrollToSection("about")}
-          class="block w-full px-4 py-4 text-left text-lg font-medium text-gray-300 hover:text-red-500 hover:bg-gray-800 hover:bg-opacity-50 rounded-lg transition-all duration-200 active:scale-[0.98] transform"
+          disabled={isNavigating}
+          class="block w-full px-4 py-4 text-left text-lg font-medium text-gray-300 hover:text-red-500 hover:bg-gray-800 hover:bg-opacity-50 rounded-lg transition-all duration-200 active:scale-[0.98] transform disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <div class="flex items-center gap-3">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -172,7 +224,8 @@
         </button>
         <button
           on:click={() => scrollToSection("contact")}
-          class="block w-full px-4 py-4 text-left text-lg font-medium text-gray-300 hover:text-red-500 hover:bg-gray-800 hover:bg-opacity-50 rounded-lg transition-all duration-200 active:scale-[0.98] transform"
+          disabled={isNavigating}
+          class="block w-full px-4 py-4 text-left text-lg font-medium text-gray-300 hover:text-red-500 hover:bg-gray-800 hover:bg-opacity-50 rounded-lg transition-all duration-200 active:scale-[0.98] transform disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <div class="flex items-center gap-3">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
