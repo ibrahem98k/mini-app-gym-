@@ -10,6 +10,7 @@ This mini app is fully integrated with the **SUPERQI** JSAPI bridge (`hylid-brid
 - **Authentication**: Uses `my.getAuthCode` with `auth_base` and `USER_ID` scopes to allow seamless login for SUPERQI users.
 - **QR Scanning**: Integrates `my.scan` in the main dashboard for scanning gym access or equipment codes.
 - **Payments**: Uses `my.tradePay` for processing gym membership subscriptions directly within SUPERQI.
+- **Maps**: Utilizes super app map integration for gym location services and navigation.
 - **Native UI**: Utilizes `my.alert` for platform-native notifications and dialogs.
 
 ## ✨ Features
@@ -17,7 +18,7 @@ This mini app is fully integrated with the **SUPERQI** JSAPI bridge (`hylid-brid
 - **Welcome/Splash Screen**: A premium entry point that handles SUPERQI authorization on first load.
 - **Subscription Management**: Browse and select from Monthly, Quarterly, or Yearly membership plans.
 - **Real-time Status**: View your active subscription, progress bars, and renewal dates with a glassmorphism design.
-- **Baghdad Location**: Localized for Baghdad, Iraq, featuring integrated Google Maps and QR directions.
+- **Baghdad Location**: Localized for Baghdad, Iraq, featuring integrated super app map services and navigation.
 - **Checkout Experience**: One-tap payment flow utilizing the SUPERQI payment gateway.
 
 ## 🛠️ Technical Stack
