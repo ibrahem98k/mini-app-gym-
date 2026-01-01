@@ -97,7 +97,7 @@
             <div class="text-center py-12">
                 <p class="text-gray-400 mb-4">No plan selected</p>
                 <a
-                    href="/#plans"
+                    href="/plans"
                     class="text-red-500 hover:text-red-400 font-bold"
                     >Go back to plans</a
                 >

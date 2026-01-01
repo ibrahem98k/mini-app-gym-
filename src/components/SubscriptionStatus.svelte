@@ -222,8 +222,8 @@
           </p>
 
           <a
-            href="/#plans"
-            class="block w-full bg-gradient-to-r from-red-600 to-red-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-red-900/20 hover:shadow-red-600/30 transition-all hover:-translate-y-0.5"
+            href="/plans"
+            class="block w-full bg-gradient-to-r from-red-600 to-red-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-red-900/20 hover:shadow-red-600/30 transition-all hover:-translate-y-0.5 text-center"
           >
             View Membership Plans
           </a>

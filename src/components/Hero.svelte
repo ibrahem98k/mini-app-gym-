@@ -80,8 +80,8 @@
         style="animation-delay: 0.4s;"
       >
         <button
-          on:click={() => scrollToSection("plans")}
-          class="btn-primary shadow-glow hover:shadow-glow-lg text-lg w-full sm:w-auto"
+          on:click={() => goto("/plans")}
+          class="btn-primary shadow-glow hover:shadow-glow-lg text-lg w-full sm:w-auto text-center"
         >
           View Plans
         </button>
