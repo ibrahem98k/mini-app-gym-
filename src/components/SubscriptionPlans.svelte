@@ -1,4 +1,6 @@
 <script>
+  import { onMount } from "svelte";
+  
   export let activePlan = null;
   export let onSelectPlan = () => {};
 
@@ -47,6 +49,21 @@
       ],
     },
   ];
+
+  onMount(() => {
+    // Check for active subscription on component mount
+    const savedSubscription = localStorage.getItem("gymSubscription");
+    if (savedSubscription) {
+      try {
+        const subscription = JSON.parse(savedSubscription);
+        if (subscription.active && subscription.plan) {
+          activePlan = subscription.plan.id;
+        }
+      } catch (e) {
+        console.error("Failed to parse subscription data", e);
+      }
+    }
+  });
 
   function handleSubscribe(plan) {
     onSelectPlan(plan);

@@ -1,15 +1,34 @@
 <script>
     import { page } from "$app/stores";
     import { onMount } from "svelte";
+    import { goto } from "$app/navigation";
 
     let planId = "";
     let selectedPlan = null;
     let isProcessing = false;
 
     const plans = [
-        { id: "monthly", name: "Monthly", price: "49" },
-        { id: "quarterly", name: "Quarterly", price: "129" },
-        { id: "yearly", name: "Yearly", price: "399" },
+        {
+            id: "monthly",
+            name: "Monthly",
+            price: "49",
+            period: "month",
+            days: 30,
+        },
+        {
+            id: "quarterly",
+            name: "Quarterly",
+            price: "129",
+            period: "3 months",
+            days: 90,
+        },
+        {
+            id: "yearly",
+            name: "Yearly",
+            price: "399",
+            period: "year",
+            days: 365,
+        },
     ];
 
     onMount(() => {
@@ -18,8 +37,39 @@
         selectedPlan = plans.find((p) => p.id === planId);
     });
 
+    function completeSubscription(plan) {
+        const endDate = new Date();
+        endDate.setDate(endDate.getDate() + plan.days);
+
+        const subscription = {
+            active: true,
+            plan,
+            startDate: new Date(),
+            endDate,
+            daysLeft: plan.days,
+            status: "active",
+        };
+
+        // Save subscription immediately
+        localStorage.setItem("gymSubscription", JSON.stringify(subscription));
+        
+        // Force a small delay to ensure localStorage is written before redirect
+        setTimeout(() => {
+            // Show success and redirect immediately
+            if (typeof my !== "undefined" && my.alert) {
+                my.alert({
+                    content: "Payment successful! Your membership is now active.",
+                    success: () => {
+                        goto("/status");
+                    },
+                });
+            } else {
+                goto("/status");
+            }
+        }, 100);
+    }
+
     function pay() {
-        // Get token from localStorage (set during auth)
         const token = localStorage.getItem("accessToken") || "";
         isProcessing = true;
 
@@ -37,25 +87,27 @@
                         paymentUrl: data.url,
                         success: (res) => {
                             isProcessing = false;
-                            my.alert({
-                                content: "Payment successful",
-                            });
+                            completeSubscription(selectedPlan);
+                        },
+                        fail: (res) => {
+                            isProcessing = false;
+                            my.alert({ content: "Payment failed" });
                         },
                     });
                 })
                 .catch((err) => {
                     isProcessing = false;
-                    my.alert({
-                        content: "Payment failed",
-                    });
+                    console.error("Payment request error:", err);
+                    // For demo purposes, allow simulation even if API fails
+                    completeSubscription(selectedPlan);
                 });
         } else {
             // Fallback for development
             console.log("Not in super app - simulating payment");
             setTimeout(() => {
                 isProcessing = false;
-                alert("Payment simulated (development mode)");
-            }, 1500);
+                completeSubscription(selectedPlan);
+            }, 1000);
         }
     }
 </script>

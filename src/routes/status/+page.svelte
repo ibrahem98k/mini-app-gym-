@@ -21,8 +21,8 @@
     };
 
     onMount(() => {
-        // Simulate loading data
-        setTimeout(() => {
+        // Function to load subscription data
+        function loadSubscriptionData() {
             const savedSubscription = localStorage.getItem("gymSubscription");
             if (savedSubscription) {
                 try {
@@ -33,7 +33,25 @@
                 }
             }
             isLoading = false;
-        }, 800);
+        }
+
+        // Load data immediately
+        loadSubscriptionData();
+
+        // Add a refresh mechanism to check for updates
+        const refreshInterval = setInterval(() => {
+            loadSubscriptionData();
+        }, 500); // Check every 500ms for the first few seconds after payment
+
+        // Clear interval after 5 seconds to avoid unnecessary checks
+        setTimeout(() => {
+            clearInterval(refreshInterval);
+        }, 5000);
+
+        // Cleanup on unmount
+        return () => {
+            clearInterval(refreshInterval);
+        };
     });
 </script>
 
