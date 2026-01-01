@@ -8,11 +8,32 @@
   };
 
   const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+    // Close mobile menu first
     menuOpen = false;
+    
+    // Add a small delay to ensure menu animation completes
+    setTimeout(() => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        // Calculate offset for sticky header
+        const headerHeight = 80; // Approximate header height
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+        
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        });
+      } else {
+        // Fallback: try to navigate to the page if element not found
+        if (sectionId === "home") {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else if (sectionId === "plans") {
+          // Navigate to plans page
+          window.location.href = "/plans";
+        }
+      }
+    }, 100);
   };
 </script>
 
@@ -118,27 +139,48 @@
       <div class="pt-4 pb-6 border-t border-gray-800 border-opacity-50">
         <button
           on:click={() => scrollToSection("home")}
-          class="block w-full px-4 py-3 text-left text-lg font-medium text-red-500 hover:bg-gray-800 hover:bg-opacity-30 rounded-lg transition-colors duration-200"
+          class="block w-full px-4 py-4 text-left text-lg font-medium text-red-500 hover:bg-gray-800 hover:bg-opacity-50 rounded-lg transition-all duration-200 active:scale-[0.98] transform"
         >
-          Home
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            Home
+          </div>
         </button>
         <button
           on:click={() => scrollToSection("plans")}
-          class="block w-full px-4 py-3 text-left text-lg font-medium text-gray-300 hover:text-red-500 hover:bg-gray-800 hover:bg-opacity-30 rounded-lg transition-colors duration-200"
+          class="block w-full px-4 py-4 text-left text-lg font-medium text-gray-300 hover:text-red-500 hover:bg-gray-800 hover:bg-opacity-50 rounded-lg transition-all duration-200 active:scale-[0.98] transform"
         >
-          Plans
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Plans
+          </div>
         </button>
         <button
           on:click={() => scrollToSection("about")}
-          class="block w-full px-4 py-3 text-left text-lg font-medium text-gray-300 hover:text-red-500 hover:bg-gray-800 hover:bg-opacity-30 rounded-lg transition-colors duration-200"
+          class="block w-full px-4 py-4 text-left text-lg font-medium text-gray-300 hover:text-red-500 hover:bg-gray-800 hover:bg-opacity-50 rounded-lg transition-all duration-200 active:scale-[0.98] transform"
         >
-          About
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            About
+          </div>
         </button>
         <button
           on:click={() => scrollToSection("contact")}
-          class="block w-full px-4 py-3 text-left text-lg font-medium text-gray-300 hover:text-red-500 hover:bg-gray-800 hover:bg-opacity-30 rounded-lg transition-colors duration-200"
+          class="block w-full px-4 py-4 text-left text-lg font-medium text-gray-300 hover:text-red-500 hover:bg-gray-800 hover:bg-opacity-50 rounded-lg transition-all duration-200 active:scale-[0.98] transform"
         >
-          Contact
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            Contact
+          </div>
         </button>
         <div class="mt-4 pt-4 border-t border-gray-800 border-opacity-50">
           <!-- <Auth /> -->
